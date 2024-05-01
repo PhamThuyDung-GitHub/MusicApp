@@ -1,38 +1,55 @@
-import { RequestHandler } from "express";
-import nodemailer from "nodemailer";
+import { Model, model, ObjectId, Schema } from "mongoose";
+import { hash, compare } from "bcrypt";
 
-import { CreateUser } from "#/@types/user";
-import User from "#/models/user";
-import EmailVerificationToken from "#/models/emailVerificationToken";
-import { MAILTRAP_PASS, MAILTRAP_USER } from "#/utils/variables";
-import { generateToken } from "#/utils/helper";
+// interface (typescript)
+interface EmailVerificationTokenDocument {
+  owner: ObjectId;
+  token: string;
+  createdAt: Date;
+}
 
-export const create: RequestHandler = async (req: CreateUser, res) => {
-  const { email, password, name } = req.body;
+interface Methods {
+  compareToken(token: string): Promise<boolean>;
+}
 
-  const user = await User.create({ name, email, password });
+// expire them after 1 hrs
 
-  // send verification email
-  const transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: MAILTRAP_USER,
-      pass: MAILTRAP_PASS,
-    },
-  });
+const emailVerificationTokenSchema = new Schema<
+  EmailVerificationTokenDocument,
+  {},
+  Methods
+>({
+  owner: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  token: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    expires: 3600, // 60 min * 60 sec = 3600s
+    default: Date.now(),
+  },
+});
 
-  const token = generateToken();
-  await EmailVerificationToken.create({
-    owner: user._id,
-    token,
-  });
+emailVerificationTokenSchema.pre("save", async function (next) {
+  // hash the token
+  if (this.isModified("token")) {
+    this.token = await hash(this.token, 10);
+  }
 
-  transport.sendMail({
-    to: user.email,
-    from: "auth@myapp.com",
-    html: `<h1>Your verification token is ${token}</h1>`,
-  });
+  next();
+});
 
-  res.status(201).json({ user });
+emailVerificationTokenSchema.methods.compareToken = async function (token) {
+  const result = await compare(token, this.token);
+  return result;
 };
+
+export default model(
+  "EmailVerificationToken",
+  emailVerificationTokenSchema
+) as Model<EmailVerificationTokenDocument, {}, Methods>;
