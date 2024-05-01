@@ -1,30 +1,41 @@
+// Importing necessary modules
 import express from "express";
-import "dotenv/config";
-import "./db";
+import "dotenv/config"; // Ensures environment variables are loaded at the start
+import "./db"; // Database connection setup
 
+// Router imports
 import authRouter from "./routers/auth";
 
+// Environment variable checks for debugging
+console.log("MAILTRAP_USER:", process.env.MAILTRAP_USER);
+console.log("MAILTRAP_PASS:", process.env.MAILTRAP_PASS);
+
+// Creating an Express application
 const app = express();
 
-// register our middleware
+// Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Registering routers
 app.use("/auth", authRouter);
 
+// Setting the server port from environment variables or default
 const PORT = process.env.PORT || 8989;
 
+// Starting the server
 app.listen(PORT, () => {
-  console.log("Port is listening on port " + PORT);
+  console.log(`Server is listening on port ${PORT}`);
 });
 
+// Planned Features Comment (For documentation purposes, does not affect code execution)
 /**
- * The plan and features
- * upload audio files
- * listen to single audio
- * add to favorites
- * create playlist
- * remove playlist (public-private)
- * remove audios
- * many more
- * */
+ * Planned features:
+ * - Upload audio files
+ * - Listen to single audio
+ * - Add to favorites
+ * - Create playlist
+ * - Remove playlist (public-private)
+ * - Remove audios
+ * - Many more
+ */
