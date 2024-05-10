@@ -5,7 +5,7 @@ import {
   logOut,
   sendProfile,
   sendReVerificationToken,
-  signIn,z
+  signIn,
   updatePassword,
   updateProfile,
   verifyEmail,
