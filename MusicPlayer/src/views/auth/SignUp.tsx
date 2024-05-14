@@ -11,29 +11,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import * as yup from 'yup';
-
-const signupSchema = yup.object({
-  name: yup
-    .string()
-    .trim('Name is missing!')
-    .min(3, 'Invalid name!')
-    .required('Name is required!'),
-  email: yup
-    .string()
-    .trim('Email is missing!')
-    .email('Invalid email!')
-    .required('Email is required!'),
-  password: yup
-    .string()
-    .trim('Password is missing!')
-    .min(8, 'Password is too short!')
-    .matches(
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
-      'Password is too simple!',
-    )
-    .required('Password is required!'),
-});
 
 interface Props {}
 
@@ -57,8 +34,12 @@ const SignUp: FC<Props> = props => {
           console.log(values);
         }}
         initialValues={initialValues}
-        validationSchema={signupSchema}>
+        // validationSchema={}
+      >
         {({handleSubmit, handleChange, errors, values}) => {
+          const handlePress = () => {
+            handleSubmit();
+          };
           return (
             <View style={styles.formContainer}>
               <AuthInputField
@@ -67,7 +48,6 @@ const SignUp: FC<Props> = props => {
                 containerStyle={styles.marginBottom}
                 onChange={handleChange('name')}
                 value={values.name}
-                errorMsg={errors.name}
               />
               <AuthInputField
                 placeholder="john@email.com"
@@ -77,7 +57,6 @@ const SignUp: FC<Props> = props => {
                 containerStyle={styles.marginBottom}
                 onChange={handleChange('email')}
                 value={values.email}
-                errorMsg={errors.email}
               />
               <AuthInputField
                 placeholder="********"
@@ -86,9 +65,8 @@ const SignUp: FC<Props> = props => {
                 secureTextEntry
                 onChange={handleChange('password')}
                 value={values.password}
-                errorMsg={errors.password}
               />
-              <Button onPress={handleSubmit} title="Sign up" />
+              <Button onPress={handlePress} title="Sign up" />
             </View>
           );
         }}
