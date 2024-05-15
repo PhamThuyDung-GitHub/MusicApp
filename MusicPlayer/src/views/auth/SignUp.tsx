@@ -2,12 +2,20 @@ import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
 import colors from '@utils/colors';
 import {FC, useState} from 'react';
-import {Button, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  Button,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import * as yup from 'yup';
 import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
 import CircleUi from '@ui/CircleUi';
+import AuthFormContainer from '@components/AuthFormContainer';
 
 const signupSchema = yup.object({
   name: yup
@@ -47,17 +55,15 @@ const SignUp: FC<Props> = props => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <CircleUi position="top-left" size={200} />
-      <CircleUi position="top-right" size={100} />
-      <CircleUi position="bottom-left" size={100} />
-      <CircleUi position="bottom-right" size={200} />
-      <Form
-        onSubmit={values => {
-          console.log(values);
-        }}
-        initialValues={initialValues}
-        validationSchema={signupSchema}>
+    <Form
+      onSubmit={values => {
+        console.log(values);
+      }}
+      initialValues={initialValues}
+      validationSchema={signupSchema}>
+      <AuthFormContainer
+        heading="Welcome!"
+        subHeading="Let's get started by creating your account.">
         <View style={styles.formContainer}>
           <AuthInputField
             name="name"
@@ -90,21 +96,14 @@ const SignUp: FC<Props> = props => {
             <AppLink title="Sign in" />
           </View>
         </View>
-      </Form>
-    </SafeAreaView>
+      </AuthFormContainer>
+    </Form>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.PRIMARY,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   formContainer: {
     width: '100%',
-    paddingHorizontal: 15, // padding in the x direction (left and the right)
   },
   marginBottom: {
     marginBottom: 20,
