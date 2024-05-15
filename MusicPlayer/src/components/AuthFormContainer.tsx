@@ -18,10 +18,7 @@ const AuthFormContainer: FC<Props> = ({children, heading, subHeading}) => {
       <CircleUi position="bottom-right" size={200} />
 
       <View style={styles.headerContainer}>
-        <Image
-          style={{width: 190, height: 135}}
-          source={require('../assets/logo.png')}
-        />
+        <Image style={{ width: 190, height: 135 }}source={require('../assets/logo.png')} />
         <Text style={styles.heading}>{heading}</Text>
         <Text style={styles.subHeading}>{subHeading}</Text>
       </View>
