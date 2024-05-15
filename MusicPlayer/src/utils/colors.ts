@@ -1,7 +1,7 @@
-const PRIMARY = '#195700';
-const SECONDARY = '#1FFF01';
-const CONTRAST = '#FFFFFF';
-const INACTIVE_CONTRAST = 'rgba(255, 255, 255, 0.5)';
+const PRIMARY = '#FFFFFF';
+const SECONDARY = '#3BEF1E';
+const CONTRAST = '#000000';
+const INACTIVE_CONTRAST = 'rgba(0, 0, 0, 0.5)';
 const ERROR = '#FF5B14';
 const SUCCESS = '#3BEF1E';
 const OVERLAY = 'rgba(45, 35, 35, 0.5)';
