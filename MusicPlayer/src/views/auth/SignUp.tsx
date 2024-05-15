@@ -1,10 +1,13 @@
 import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form';
 import colors from '@utils/colors';
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {Button, SafeAreaView, StyleSheet, View} from 'react-native';
 import * as yup from 'yup';
 import SubmitBtn from '@components/form/SubmitBtn';
+import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
+import AppLink from '@ui/AppLink';
+import CircleUi from '@ui/CircleUi';
 
 const signupSchema = yup.object({
   name: yup
@@ -37,8 +40,18 @@ const initialValues = {
 };
 
 const SignUp: FC<Props> = props => {
+  const [secureEntry, setSecureEntry] = useState(true);
+
+  const togglePasswordView = () => {
+    setSecureEntry(!secureEntry);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <CircleUi position="top-left" size={200} />
+      <CircleUi position="top-right" size={100} />
+      <CircleUi position="bottom-left" size={100} />
+      <CircleUi position="bottom-right" size={200} />
       <Form
         onSubmit={values => {
           console.log(values);
@@ -65,9 +78,17 @@ const SignUp: FC<Props> = props => {
             placeholder="********"
             label="Password"
             autoCapitalize="none"
-            secureTextEntry
+            secureTextEntry={secureEntry}
+            containerStyle={styles.marginBottom}
+            rightIcon={<PasswordVisibilityIcon privateIcon={secureEntry} />}
+            onRightIconPress={togglePasswordView}
           />
           <SubmitBtn title="Sign up" />
+
+          <View style={styles.linkContainer}>
+            <AppLink title="I Lost My Password" />
+            <AppLink title="Sign in" />
+          </View>
         </View>
       </Form>
     </SafeAreaView>
@@ -87,6 +108,12 @@ const styles = StyleSheet.create({
   },
   marginBottom: {
     marginBottom: 20,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 20,
   },
 });
 
