@@ -4,14 +4,21 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import OTPField from '@ui/OTPField';
 import AppButton from '@ui/AppButton';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AuthStackParamList} from 'src/@types/navigation';
+import client from 'src/api/client';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
-interface Props {}
+type Props = NativeStackScreenProps<AuthStackParamList, 'Verification'>;
 
 const otpFields = new Array(6).fill('');
 
-const Verification: FC<Props> = props => {
+const Verification: FC<Props> = ({route}) => {
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
   const [otp, setOtp] = useState([...otpFields]);
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
+
+  const {userInfo} = route.params;
 
   const inputRef = useRef<TextInput>(null);
 
@@ -39,8 +46,23 @@ const Verification: FC<Props> = props => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log(otp);
+  const isValidOtp = otp.every(value => {
+    return value.trim();
+  });
+
+  const handleSubmit = async () => {
+    if (!isValidOtp) return;
+
+    try {
+      const {data} = await client.post('/auth/verify-email', {
+        userId: userInfo.id,
+        token: otp.join(''),
+      });
+      // navigate back to sign in
+      navigation.navigate('SignIn');
+    } catch (error) {
+      console.log('Error inside Verification: ', error);
+    }
   };
 
   useEffect(() => {
